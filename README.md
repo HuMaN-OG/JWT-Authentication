@@ -1,121 +1,105 @@
-# 🔐 JWT Authentication — React Demo
+# JWT Authentication Demo
 
-> A polished, interactive **JWT authentication demo** built with **React 19 + Vite**. Demonstrates how JSON Web Tokens work end-to-end — login, token generation, protected routes, token inspection, and role-based access — all running entirely in the browser.
+A hands-on demo I built to properly understand how JWT (JSON Web Token) authentication works under the hood — token structure, signing, expiry, and protected routes — all without any backend.
 
-![JWT Auth Demo](./src/assets/hero.png)
+**Live demo → [humaN-OG.github.io/JWT-Authentication](https://human-og.github.io/JWT-Authentication/)**
 
----
-
-## ✨ Features
-
-| Feature | Details |
-|---|---|
-| **Login Page** | Animated glassmorphism card with demo quick-fill buttons |
-| **JWT Simulation** | `Header.Payload.Signature` structure with Base64url encoding |
-| **Protected Route** | Dashboard only renders when a valid, unexpired token exists |
-| **Token Inspector** | Color-coded raw token + decoded header / payload / signature |
-| **Role-Based Access** | Three roles (`admin`, `editor`, `viewer`) with distinct permissions |
-| **Session Persistence** | Token stored in `localStorage`; survives page refresh |
-| **Auto Expiry** | Tokens expire after 1 hour; invalid/expired tokens auto-clear |
-| **Responsive Design** | Fully responsive dark UI with micro-animations |
+![screenshot](./src/assets/hero.png)
 
 ---
 
-## 🚀 Getting Started
+## Why I built this
 
-### Prerequisites
-- **Node.js** ≥ 18
-- **npm** ≥ 9
+Most JWT tutorials either skip the internals entirely or require a full backend setup before you can see anything happen. I wanted something I could run instantly in the browser and actually *see* the token being constructed, encoded, and decoded in real time.
 
-### Installation
+So I built a self-contained demo that:
+- Generates a real `Header.Payload.Signature` JWT structure
+- Lets you inspect every part of the token after login
+- Shows how a protected route behaves when the token is valid, expired, or missing
+- Demonstrates role-based permissions (admin / editor / viewer)
+
+---
+
+## Features
+
+- **Login page** with animated glassmorphism UI and one-click demo account fill
+- **JWT token generation** using Base64url encoding (mirrors the real spec)
+- **Token Inspector** — click to expand and see the raw + decoded token with color-coded parts
+- **Protected route** — dashboard only renders when a valid, unexpired token is in storage
+- **3 user roles** with different permission sets
+- **Session persistence** — token survives page refresh (stored in `localStorage`)
+- **Auto expiry** — tokens expire after 1 hour and auto-clear on next load
+- **Fully responsive** dark UI
+
+---
+
+## Demo accounts
+
+| Role | Username | Password |
+|---|---|---|
+| 👑 Admin | `admin` | `admin123` |
+| ✏️ Editor | `editor` | `editor123` |
+| 👁️ Viewer | `viewer` | `viewer123` |
+
+Use the quick-fill buttons on the login screen — no need to type.
+
+---
+
+## Running locally
 
 ```bash
-# 1. Clone the repository
-git clone https://github.com/<your-username>/jwt-authentication.git
-cd jwt-authentication
-
-# 2. Install dependencies
+git clone https://github.com/HuMaN-OG/JWT-Authentication.git
+cd JWT-Authentication
 npm install
-
-# 3. Start the dev server
 npm run dev
 ```
 
-Open [http://localhost:5173](http://localhost:5173) in your browser.
+Runs at `http://localhost:5173`
 
 ---
 
-## 🧑‍💻 Demo Credentials
-
-The app ships with three pre-built accounts. Use the quick-fill pills on the login screen or enter manually:
-
-| Role | Username | Password | Permissions |
-|---|---|---|---|
-| 👑 Admin | `admin` | `admin123` | Read, Write, Delete, Manage Users, System Settings |
-| ✏️ Editor | `editor` | `editor123` | Read, Write, Publish Content |
-| 👁️ Viewer | `viewer` | `viewer123` | Read |
-
----
-
-## 🏗️ Project Structure
+## Project structure
 
 ```
 src/
 ├── components/
-│   ├── LoginPage.jsx          # Login form with demo quick-fill
-│   ├── LoginPage.module.css
-│   ├── Dashboard.jsx          # Protected dashboard + token inspector
-│   └── Dashboard.module.css
+│   ├── LoginPage.jsx       # login form + demo quick-fill
+│   └── Dashboard.jsx       # protected dashboard + token inspector
 ├── context/
-│   └── AuthContext.jsx        # Global auth state (login / logout / rehydrate)
+│   └── AuthContext.jsx     # login / logout / session rehydration
 ├── utils/
-│   ├── jwt.js                 # Token generation, decoding, storage helpers
-│   └── users.js               # Simulated user DB & role metadata
-├── App.jsx                    # Root – AuthProvider + protected route logic
-├── main.jsx
-└── index.css                  # Global reset & design tokens
+│   ├── jwt.js              # token generation, decoding, localStorage helpers
+│   └── users.js            # mock user DB + role metadata
+└── App.jsx                 # protected route logic
 ```
 
 ---
 
-## 🔑 How JWT Works in This Demo
+## How the JWT flow works
 
 ```
-1. Login       → Credentials validated against the in-memory user store
-2. Generate    → JWT created: Base64url(Header) . Base64url(Payload) . Signature
-3. Store       → Token saved to localStorage with a 1-hour expiry (exp claim)
-4. Route Guard → Dashboard renders only when token is present, valid & unexpired
-5. Inspect     → Token Inspector panel shows color-coded raw token + decoded JSON
-6. Logout      → Token removed from storage; user redirected to login
+Login       →  credentials checked against mock user store
+Generate    →  JWT built: base64url(header) + "." + base64url(payload) + "." + signature
+Store       →  token saved to localStorage with 1hr expiry (exp claim)
+Route guard →  dashboard renders only if token is present, valid, and not expired
+Logout      →  token removed, user sent back to login
 ```
 
-> **⚠️ Educational Notice**
-> This project simulates JWT signing on the **client side** for learning purposes.
-> In a real application, tokens must be signed server-side with a secret that never leaves the backend.
-> Passwords should be hashed (e.g., bcrypt) and **never** stored in plain text.
+> **Note:** Token signing happens client-side here for demo purposes only.
+> In a real app, signing must happen server-side with a secret the client never sees.
+> Passwords here are plain text — use bcrypt in production.
 
 ---
 
-## 🛠️ Tech Stack
+## Tech
 
-- **React 19** — UI library
-- **Vite 8** — build tool & dev server
-- **CSS Modules** — scoped component styles
-- **Oxlint** — fast JavaScript linter
-
----
-
-## 📦 Available Scripts
-
-| Command | Description |
-|---|---|
-| `npm run dev` | Start development server with HMR |
-| `npm run build` | Build optimised production bundle |
-| `npm run preview` | Preview production build locally |
-| `npm run lint` | Run Oxlint static analysis |
+- React 19
+- Vite 8
+- CSS Modules
+- No external auth libraries — everything is hand-rolled for learning
 
 ---
 
-## 📄 License
+## License
 
-[MIT](./LICENSE)
+MIT
